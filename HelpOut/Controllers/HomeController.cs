@@ -19,18 +19,33 @@ namespace HelpOut.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         public ActionResult Index()
         {
-            ApplicationUser user = new ApplicationUser();
-            string currentUserID = User.Identity.GetUserId();
-
-            if (Request.IsAuthenticated)
-            {
-                user = (from u in db.Users
-                        where u.Id == currentUserID
-                        select u).First();
-            }
+            var events = from e in db.Events
+                         select new EventDTO()
+                         {
+                             EventID = e.EventID,
+                             Name = e.Name,
+                             DateTime = e.DateTime,
+                             Address = e.Address,
+                             City = e.City,
+                             State = e.State,
+                             Country = e.Country,
+                             ZipCode = e.ZipCode,
+                             Description = e.Description,
+                             OrganizationName = e.Organization.FullName
+                         };
+            return View(events.ToList());
             
-            return View(user);
+            //ApplicationUser user = new ApplicationUser();
+            //string currentUserID = User.Identity.GetUserId();
 
+            //if (Request.IsAuthenticated)
+            //{
+            //    user = (from u in db.Users
+            //            where u.Id == currentUserID
+            //            select u).First();
+            //}
+            
+            //return View(user);
         }
 
 

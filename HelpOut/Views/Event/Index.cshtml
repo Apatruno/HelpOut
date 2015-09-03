@@ -32,22 +32,21 @@
         <th>
             @Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DateSortParm })
         </th>
-        <td>
+        <th>
             @Html.DisplayNameFor(model => model.Address)
-        </td>
-        <td>
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.City)
-        </td>
-        <td>
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.State)
-        </td>
-        <td>
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.ZipCode)
-        </td>
-        <td>
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.Country)
-        </td>
-        <th></th>
+        </th>
     </tr>
 
     @foreach (var item in Model)
@@ -79,11 +78,11 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Country)
             </td>
-            <td>
-                @*@Html.ActionLink("Edit", "Edit", new { id=item.EventID }) |
+            @*<td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.EventID }) |
                     @Html.ActionLink("Details", "Details", new { id=item.EventID }) |
-                    @Html.ActionLink("Delete", "Delete", new { id=item.EventID })*@
-            </td>
+                    @Html.ActionLink("Delete", "Delete", new { id=item.EventID })
+            </td>*@
         </tr>
     }
 
