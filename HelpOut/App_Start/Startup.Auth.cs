@@ -54,9 +54,9 @@ namespace HelpOut
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
+            app.UseFacebookAuthentication(
+               appId: "419634328227070",
+               appSecret: "cb70bddcaacf648494e2ef7ebf563c7b");
 
             //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             //{

@@ -404,7 +404,7 @@ namespace HelpOut.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email,FullName = model.FullName, Description=model.Description, Website=model.Website, PhoneNumber= model.PhoneNumber};
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
