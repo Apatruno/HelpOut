@@ -1,15 +1,19 @@
 ﻿@using HelpOut.Models
 @using Microsoft.AspNet.Identity
 
-@model ApplicationUser
+@*@model ApplicationUser*@
+@model IEnumerable<HelpOut.Models.EventDTO>
 
 @{
     ViewBag.Title = "Home Page";
 }
+
+<!--//////////////////////CODE FOR IMAGE CAROUSEL AND TRENDING EVENTS PAGE/////////////////////////////////-->
+
 <div class="container" style="margin-top: 30px">
-    <div class="col-md-8">
+    <div class="col-md-6">
         <!-- Code for image carousel -->
-        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        <div id="myCarousel" class="carousel slide" data-ride="carousel" style="margin-bottom: 30px">
             <!-- Indicators -->
             <ol class="carousel-indicators">
                 <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -61,6 +65,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Left and right controls -->
             <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
                 <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
@@ -72,25 +77,63 @@
             </a>
         </div>
     </div>
-    @*<div id="fb-root"></div>
-    <script>
-(function (d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4&appId=419634328227070";
-    fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
-    <div class="fb-like" data-href="https://Helpout.azurewebsites.net" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>*@
-    <div class="col-md-4">
+    <!-- CODE FOR TRENDING EVENTS TABLE -->
+    <div class="col-md-6" style="background-color:#e5f1c3;border:groove 1px; border-color:#e5f1c3; display: table">
         <h1 style="text-align:center">
             <b>
-                Upcoming Events
+                Trending Events!
             </b>
         </h1>
+        <table class="table table-hover">
+            <tr>
+                <th>
+                    WHO
+                </th>
+                <th>
+                    WHAT
+                </th>
+                <th>
+                    WHEN
+                </th>
+                <th>
+                    WHERE
+                </th>
+            </tr>
 
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrganizationName)
+                    </td>
+                    <td>
+                        @Html.ActionLink(item.Name, "Details", "Event", new { id = item.EventID }, null)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.City)
+                    </td>
+                </tr>
+            }
+
+        </table>
     </div>
 </div>
+
+<!--//////////////////////CODE FOR FACEBOOK/////////////////////////////////-->
+<div id="fb-root"></div>
+<script>
+    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4&appId=419634328227070";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+<div class="fb-like" data-href="https://Helpout.azurewebsites.net" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
+
 
 @*@if (Request.IsAuthenticated)
     {
