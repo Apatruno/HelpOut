@@ -13,12 +13,12 @@ namespace HelpOut.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201509041756074_initial"; }
+            get { return "201509081843289_initial"; }
         }
         
         string IMigrationMetadata.Source
         {
-            get { return null; }
+            get { return Resources.GetString("Source"); }
         }
         
         string IMigrationMetadata.Target

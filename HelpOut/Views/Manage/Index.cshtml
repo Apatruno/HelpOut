@@ -14,7 +14,6 @@
             {
                 <span>Organization: @ViewBag.FullName<br /></span>
             }
-
             @if (ViewBag.Role == "Volunteer")
             {
                 <span> Volunteer: @ViewBag.FullName <br /></span>
@@ -22,10 +21,20 @@
         </strong>
     </h3>
     <br />
-    Email: @ViewBag.Email<br /> <br />
-    Location: @ViewBag.Location<br /> <br />
-    Description: @ViewBag.Description<br /> <br />
-    Phone Number: @ViewBag.PhoneNumber<br /> <br />
+@if (ViewBag.Role == "Organization")
+{
+    <span><b>Email:</b> @ViewBag.Email<br /><br /></span>
+    <span><b>Head Quarters:</b> @ViewBag.Location<br /><br /></span>
+    <span><b>Mission Statement:</b> @ViewBag.Description<br /><br /></span>
+    <span><b>Primary Contact Number:</b> @ViewBag.PhoneNumber<br /><br /></span>
+}
+ @if (ViewBag.Role == "Volunteer")
+ {
+     <span><b>Email:</b> @ViewBag.Email<br /><br /></span>
+    <span><b>Primary Address:</b> @ViewBag.Location<br /><br /></span>
+    <span><b>Interests:</b> @ViewBag.Description<br /><br /></span>
+    <span><b>Primary Phone Number:</b> @ViewBag.PhoneNumber<br /><br /></span>
+ }
 
     @{
         if (ViewBag.Role == "Organization")

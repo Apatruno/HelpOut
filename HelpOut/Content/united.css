@@ -1092,6 +1092,7 @@ body {
   line-height: 1.42857143;
   color: #333333;
   background-color: #ecffbc;
+  background-image: url("../Content/Images/Background.png")
 }
 input,
 button,
@@ -6472,9 +6473,9 @@ button.close {
   z-index: 10;
   padding-top: 20px;
   padding-bottom: 20px;
-  color: #e5f1c3;
+  color: #DEF6D6;
   text-align: center;
-  text-shadow: 0 5px 10px #000;
+  text-shadow:  2px 2px 8px #000;
 }
 .carousel-caption .btn {
   text-shadow: none;

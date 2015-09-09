@@ -389,7 +389,7 @@ namespace HelpOut.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
+        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl,string selectedRole)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -405,10 +405,17 @@ namespace HelpOut.Controllers
                     return View("ExternalLoginFailure");
                 }
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email,FullName = model.FullName, Description=model.Description, Website=model.Website, PhoneNumber= model.PhoneNumber};
+
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
+                    //adding the user to a role
+                    var context = new ApplicationDbContext();
+                    var userStore = new UserStore<ApplicationUser>(context);
+                    var userManager = new UserManager<ApplicationUser>(userStore);
+                    userManager.AddToRole(user.Id, selectedRole);
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
+
                     if (result.Succeeded)
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);

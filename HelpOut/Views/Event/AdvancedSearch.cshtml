@@ -1,0 +1,79 @@
+﻿@model IEnumerable<HelpOut.Models.EventDTO>
+@{
+    ViewBag.Title = "Index";
+}
+
+<div>
+    <img class="img-responsive" src="~/Content/Images/NewAdvancedSearchLogo.png" alt="Advanced Search" style="max-height: 100px; margin-top: 30px; margin-bottom: 30px">
+</div>
+
+@using (Html.BeginForm())
+{
+    <p>
+        <b>
+            Search events by any fields: Name, Organization, Description and Location (City, State, ZIP Code) @Html.TextBox("SearchString", null, new { maxlength = 50 })
+            <input type="submit" value="Search" />
+        </b>
+    </p>
+}
+
+
+<table class="table table-hover">
+    <tr style="background-color: #81a326; text-transform: uppercase">
+        <th>
+            Organization
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DateSortParm })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Address)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.City)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.State)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ZipCode)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrganizationName)
+            </td>
+            <td>
+                @Html.ActionLink(item.Name, "Details", new { id = item.EventID })
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.State)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ZipCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+        </tr>
+    }
+</table>

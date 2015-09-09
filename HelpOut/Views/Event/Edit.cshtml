@@ -6,16 +6,27 @@
 
 <h2>Edit</h2>
 
+<div style="position:absolute; left:60%; top:25% ">
+    @if (Model.FilePaths.Any(f => f.FileType == FileType.Photo))
+    {
+        <img src="~/Content/Images/@Model.FilePaths.FirstOrDefault(f => f.FileType == FileType.Photo).FileName"
+             style="height:200px; width:200px"; align=" middle" alt="img" />
+    }
+</div>
 
-@using (Html.BeginForm())
+
+
+@using (Html.BeginForm("Edit", "Event", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
-    
+
+
     <div class="form-horizontal">
         <h4>Event</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.EventID)
+
 
         <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -32,6 +43,12 @@
                 @Html.ValidationMessageFor(model => model.DateTime, "", new { @class = "text-danger" })
             </div>
         </div>
+            <div class="form-group">
+                @Html.Label("Change Image", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input type="file" id="Photo" name="upload" />
+                </div>
+            </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -45,14 +62,6 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Country, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Country, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Country, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -72,14 +81,6 @@
             </div>
         </div>
 
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.OrganizationID, "OrganizationID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("OrganizationID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.OrganizationID, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
