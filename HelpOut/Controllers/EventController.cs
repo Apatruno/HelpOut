@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using HelpOut.Models;
+using System.IO;
 using Microsoft.AspNet.Identity;
 
 namespace HelpOut.Controllers
@@ -126,7 +127,6 @@ namespace HelpOut.Controllers
         [Authorize (Roles="Organization")]
         public ActionResult Create()
         {
-            ViewBag.OrganizationID = new SelectList(db2.Users, "Id", "Email");
             return View();
         }
 
@@ -135,18 +135,42 @@ namespace HelpOut.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "EventID,Name,DateTime,Address,City,State,ZipCode,Country,Description")] Event @event)
+        public ActionResult Create([Bind(Include = "EventID,Name,DateTime,Address,City,State,ZipCode,Country,Description")] Event @event, HttpPostedFileBase upload)
         {
             
             if (ModelState.IsValid)
             {
                 @event.OrganizationID = User.Identity.GetUserId();
+                //check if image is there
+                if (upload != null && upload.ContentLength > 0)
+                {
+                    //make an image path
+                    var photo = new FilePath
+                   {
+                       FileName = System.IO.Path.GetFileName(upload.FileName),
+                       FileType = FileType.Photo
+                   };
+                    //adding paths to event
+                    @event.FilePaths = new List<FilePath>();
+                    @event.FilePaths.Add(photo);
+                    //save image file to project directory
+                    try
+                    {
+                        string directory = Server.MapPath("/Content/Images/");
+                        var fileName = Path.GetFileName(upload.FileName);
+                        upload.SaveAs(Path.Combine(directory, fileName));
+                    }
+                    catch (Exception e)
+                    {
+                        return View("Error");
+                    }
+                }
+                //add event to dbcontext and save to DB
                 db2.Events.Add(@event);
                 db2.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.OrganizationID = new SelectList(db2.Users, "Id", "Email", @event.OrganizationID);
             return View(@event);
         }
 
@@ -158,12 +182,16 @@ namespace HelpOut.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Event @event = db2.Events.Find(id);
+            //Event @event = db2.Events.Find(id);
+            Event @event = (from e in db2.Events
+                            where e.EventID == id
+                            select e).Include("Attendees").Include("Organization").Single();
+
             if (@event == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.OrganizationID = new SelectList(db2.Users, "Id", "Email", @event.OrganizationID);
+            //ViewBag.OrganizationID = new SelectList(db2.Users, "Id", "Email", @event.OrganizationID);
             return View(@event);
         }
 
@@ -192,7 +220,12 @@ namespace HelpOut.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Event @event = db2.Events.Find(id);
+            //Event @event = (from e in db2.Events
+            //                where e.EventID == id
+            //                select e).Include("Attendees").Include("Organization").Single();
+
             if (@event == null)
             {
                 return HttpNotFound();
@@ -209,6 +242,42 @@ namespace HelpOut.Controllers
             db2.Events.Remove(@event);
             db2.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+
+        public ActionResult GetAttendanceRoster(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var @event = (from e in db2.Events
+                          where e.EventID == id
+                          select e).Include("Attendees").Single();
+
+            if (@event == null)
+            {
+                return HttpNotFound();
+            }
+
+            string userID = User.Identity.GetUserId();
+            var user = (from u in db2.Users
+                        where u.Id == userID
+                        select u).SingleOrDefault();
+
+            if (user == null || !@event.Attendees.Contains(user))
+                ViewBag.Attending = false;
+            else
+                ViewBag.Attending = true;
+
+            ViewBag.rsvpText = "";
+            return View(@event);
+        }
+
+        public ActionResult GeneratePDF(int? id)
+        {
+            return new Rotativa.ActionAsPdf("GetAttendanceRoster", new { id = id });
         }
 
         protected override void Dispose(bool disposing)

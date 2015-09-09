@@ -21,6 +21,11 @@ namespace HelpOut.Models
         [Display(Name = "Description")]
         public string Description { get; set; }
 
+        //adding an image.
+
+        //public string image { get; set; }
+
+
         [StringLength(50, ErrorMessage = "Address cannot be longer than 50 characters ")]
         [Display(Name = "Address")]
         public string Address { get; set; }
@@ -28,6 +33,8 @@ namespace HelpOut.Models
         [StringLength(30, ErrorMessage = "Enter a valid City")]
         [Display(Name = "City")]
         public string City { get; set; }
+
+
 
         [StringLength(20, ErrorMessage = "Enter a valid State")]
         [Display(Name = "State")]
@@ -64,6 +71,8 @@ namespace HelpOut.Models
         //[ForeignKey("OrganizationID")] //workaround for the foreign key mapping issue
         public virtual ApplicationUser Organization { get; set; }
         public virtual ICollection<ApplicationUser> Attendees { get; set; }
+
+        public virtual ICollection<FilePath> FilePaths { get; set; }
     }
 }
 

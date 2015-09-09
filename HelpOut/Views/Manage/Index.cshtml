@@ -1,29 +1,67 @@
-﻿@model HelpOut.Models.IndexViewModel
-@{
-    ViewBag.Title = "Manage";
-}
+﻿@using HelpOut.Models
+@model HelpOut.Models.IndexViewModel
 
-<h2>@ViewBag.Title.</h2>
+<h2>User Profile</h2>
+@Html.ActionLink("Edit Your Profile", "Edit")
 
 <p class="text-success">@ViewBag.StatusMessage</p>
 <div>
-    @*<h4>Change your account settings</h4>*@
     <hr />
 
     <h3>
-        @if (Roles.IsUserInRole("Organization"))
+        <strong>
+            @if (ViewBag.Role == "Organization")
+            {
+                <span>Organization: @ViewBag.FullName<br /></span>
+            }
+
+            @if (ViewBag.Role == "Volunteer")
+            {
+                <span> Volunteer: @ViewBag.FullName <br /></span>
+            }
+        </strong>
+    </h3>
+    <br />
+    Email: @ViewBag.Email<br /> <br />
+    Location: @ViewBag.Location<br /> <br />
+    Description: @ViewBag.Description<br /> <br />
+    Phone Number: @ViewBag.PhoneNumber<br /> <br />
+
+    @{
+        if (ViewBag.Role == "Organization")
         {
-            <span>Account Type: Organization <br /></span>
+            <h2>Events Created:</h2>
+
+            if (ViewBag.EventsCreated.Count > 0)
+            {
+                <ul>
+                    @foreach (Event e in ViewBag.EventsCreated)
+                    {
+                        <li>@Html.ActionLink(e.Name, "Details", new { controller = "Event", id = e.EventID }) </li>
+                    }
+                </ul>
+            }
         }
 
-        @if (Roles.IsUserInRole("Volunteer"))
+        else if (ViewBag.Role == "Volunteer")
         {
-            <span> Account Type: Volunteer <br /></span>
+            <h2>Events Attending:</h2>
+
+            if (ViewBag.EventsAttending.Count > 0)
+            {
+                <ul>
+                    @foreach (Event e in ViewBag.EventsAttending)
+                    {
+                        <li>@Html.ActionLink(e.Name, "Details", new { controller = "Event", id = e.EventID }) </li>
+                    }
+                </ul>
+            }
         }
-        Email: @ViewBag.Email<br />
-        Location: @ViewBag.Location<br />
-        Description: <h4>  @ViewBag.Description</h4>
-    </h3>
+    }
+
+    <hr/>
+    <div></div>
+
 
     <dl class="dl-horizontal">
         <dt>Password:</dt>
@@ -40,10 +78,10 @@
             ]
         </dd>
         <dt>External Logins:</dt>
-            <dd>
-                @Model.Logins.Count [
-                @Html.ActionLink("Manage", "ManageLogins") ]
-            </dd>   
+        <dd>
+            @Model.Logins.Count [
+            @Html.ActionLink("Manage", "ManageLogins") ]
+        </dd>
         @*
             Phone Numbers can used as a second factor of verification in a two-factor authentication system.
 
@@ -94,7 +132,7 @@
                     <input type="submit" value="Enable" class="btn btn-link" />
                     </text>
                 }
-            }*@
-        </dd>
+            }
+        </dd>*@
     </dl>
 </div>

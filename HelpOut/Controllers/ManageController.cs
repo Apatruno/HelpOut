@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using HelpOut.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Net;
 
 namespace HelpOut.Controllers
 {
@@ -83,6 +84,21 @@ namespace HelpOut.Controllers
                 ViewData.Add("Description", currentUser.Description);
                 ViewData.Add("Website", currentUser.Website);
                 ViewData.Add("Email", currentUser.Email);
+                ViewData.Add("FullName", currentUser.FullName);
+                ViewData.Add("PhoneNumber", currentUser.PhoneNumber);
+
+                if (User.IsInRole("Organization"))
+                {
+                    ViewBag.Role = "Organization";
+                    ViewBag.EventsLabel = "Events Created:";
+                    ViewData.Add("EventsCreated", currentUser.EventsCreated);
+                }
+                else
+                {
+                    ViewBag.Role = "Volunteer";
+                    ViewBag.EventsLabel = "Events Attending:";
+                    ViewData.Add("EventsAttending", currentUser.EventsAttending);
+                }
 
             }
             return View(model);
@@ -171,6 +187,55 @@ namespace HelpOut.Controllers
                 await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             }
             return RedirectToAction("Index", "Manage");
+        }
+        private ApplicationDbContext db = new ApplicationDbContext();
+        // GET: ApplicationUsers/Edit/5
+        public ActionResult Edit()
+        {
+            var userid = User.Identity.GetUserId();
+            if (userid == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser applicationUser = db.Users.Find(userid);
+            if (applicationUser == null)
+            {
+                return HttpNotFound();
+            }
+            return View(applicationUser);
+
+        }
+
+
+        [HttpPost]
+        [ActionName("Edit")]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(ApplicationUser model)
+        {
+
+                if (ModelState.IsValid)
+                {
+                    var userid = User.Identity.GetUserId();
+                    ApplicationUser user = db.Users.Find(userid);
+                    
+                    //Code below doese the same thing with a linq expressions
+                    
+                    //var user = (from u in db.Users
+                    //            where u.Id == userid
+                    //            select u).SingleOrDefault();
+
+                    user.FullName = model.FullName;
+                    user.Location = model.Location;
+                    user.Description = model.Description;
+                    user.Website = model.Website;
+                    user.PhoneNumber = model.PhoneNumber;
+
+                    
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+
+            return View(model);
         }
 
         //

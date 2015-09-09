@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNet.Identity
+@model HelpOut.Models.Event
+@{
+    ViewBag.Title = "GetAttendanceRoster";
+}
+
+<h1>Attendance Roster For @Html.DisplayFor(model => model.Name)</h1>
+
+<table class="table">
+    <tr>
+        <th>
+            Attendee
+        </th>
+        <th>
+            Phone Number
+        </th>
+        <th>
+            Email
+        </th>
+        <th>
+            Present?
+        </th>
+    </tr>
+
+    @foreach (var u in Model.Attendees)
+    {
+        <tr>
+            <td>
+                @u.FullName
+            </td>
+            <td>
+                @u.PhoneNumber
+            </td>
+            <td>
+                @u.Email
+            </td>
+            <td>
+                <input type="checkbox" name="AttendanceCheckBox" style="text-align:center; vertical-align: middle;">
+            </td>
+        </tr>
+    }
+</table>
+

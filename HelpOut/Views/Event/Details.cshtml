@@ -2,7 +2,7 @@
 @model HelpOut.Models.Event
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = Model.Name;
     
 }
 
@@ -20,7 +20,14 @@
     </div>
 
     <div class="col-md-3">
-        <h3>placeholder <br />/for <br /> map or image</h3>
+        @if (Model.FilePaths.Any(f => f.FileType == FileType.Photo))
+        {
+            
+                @Model.FilePaths.FirstOrDefault(f => f.FileType == FileType.Photo).FileName
+                <br />
+                <img src="~/Content/Images/@Model.FilePaths.FirstOrDefault(f => f.FileType == FileType.Photo).FileName" 
+                     style="height:200px; width:200px" alt="img" />
+        }  
     </div>
     <div class="col-md-3">
         <br />
@@ -52,9 +59,8 @@
     var geocoder = new google.maps.Geocoder();
     var address = '@Model.getAddress()';
 
-    geocoder.geocode( { 'address' : address }, function(results, status){
-        if (status == google.maps.GeocoderStatus.OK)
-        {
+    geocoder.geocode({ 'address': address }, function (results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
             lat = results[0].geometry.location.lat();
             lng = results[0].geometry.location.lng();
         }
@@ -77,7 +83,7 @@
     }
 
     google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
+</script>
 <div id="googleMap" style="width:500px;height:380px;"></div>
 <aside>
     <div class="sidebar bg-grayDark" style="overflow: hidden; outline: none; margin-left: -210px;">
@@ -101,4 +107,7 @@
 <hr />
 <div class="row col-xs-12">
     @Html.ActionLink("List of Events", "Index")
+</div>
+
+    @Html.ActionLink("Print Attendance Roster", "GeneratePDF", new { id = Model.EventID })
 </div>
